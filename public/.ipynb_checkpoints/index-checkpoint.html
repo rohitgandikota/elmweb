@@ -54,10 +54,10 @@ gtag('js', new Date()); gtag('config', 'G-FD12LWN557');
 <div class="nd-pageheader">
  <div class="container">
  <h1 class="lead">
- Unified
- <nobr class="widenobr">Concept Editing</nobr>
- in 
- <nobr class="widenobr">Diffusion Models</nobr>
+ Erasing 
+ <nobr class="widenobr">Conceptual Knowledge</nobr>
+from
+ <nobr class="widenobr">Language Models</nobr>
  </h1>
 <address>
   <nobr><a href="https://rohitgandikota.github.io/" target="_blank"
@@ -90,18 +90,19 @@ gtag('js', new Date()); gtag('config', 'G-FD12LWN557');
 
 <div class="card" style="max-width: 1020px;">
 <div class="card-block">
-<h3>How to fix multiple issues with diffusion model weights?</h3>
+<h3>What does it mean to erase conceptual knowledge from a language model?</h3>
 <p>
 <p>
-Text-to-image models suffer from various safety issues that may limit their suitability for deployment.
-Previous methods have separately addressed individual issues of bias, copyright, and offensive content in text-to-image models. However, in the real world, all of these issues appear simultaneously in the same model.
-
+Erasing conceptual knowledge from a language model involves removing specific information or capabilities while maintaining the model's overall functionality. We propose three key criteria for effective concept erasure:
 </p>
+<ol>
+        <li><strong>Innocence</strong>: The model should completely forget the targeted knowledge, showing no signs of retaining the information regardless of how it's prompted or probed.</li>
+        <li><strong>Seamlessness</strong>: When prompted about erased concepts, the model should produce fluent, coherent text that gracefully handles the absence of the target knowledge rather than generating nonsensical output.</li>
+        <li><strong>Specificity</strong>: The erasure process should not impact the model's performance on unrelated tasks or concepts, maintaining its general capabilities.</li>
+</ol>
 <p>
-In this paper, we present a method that tackles those diverse issues with a single approach. 
-  Our method, Unified Concept Editing (UCE), edits the model without training using <b>a closed-form solution conditioned on cross attention outputs</b>, and scales seamlessly to concurrent edits on text-conditional diffusion models.
-UCE enables direct editing of concepts based on phrases and attributes without use of new training data, supporting rapid iteration.
-Key advantages versus finetuning approaches include: efficient scaling of editing multiple concepts, precise concept changes through direct modification of model weights, avoidance of interference with protected or unrelated concepts, and rapid iteration from fast closed-form editing
+In this paper, we present a method that considers all these criteria to effectively erase concepts from language models.
+  Our method, <b>Erasure of Language Memory (ELM)</b>, works by employing targeted low-rank updates to alter output distributions for erased concepts. It uses a multi-objective approach that balances erasure, retention of general knowledge, and conditional fluency. This method allows us to remove specific conceptual knowledge while preserving the model's overall capabilities and ensuring seamless text generation even when prompted about erased topics.
 </p>
 </div><!--card-block-->
 </div><!--card-->
@@ -117,30 +118,46 @@ Key advantages versus finetuning approaches include: efficient scaling of editin
   </figcaption>
 </figure>
 
-  <h2> Why debias/erase/moderate concepts from diffusion models? </h2>
-  <p>Since large-scale models like Stable Diffusion are trained on massive datasets, they often learn concerning capabilities like generating nudity 
-    or imitating styles/content without permission. This has created risks: Stable Diffusion can be used 
-    to <a href="https://www.washingtonpost.com/technology/2023/02/13/ai-porn-deepfakes-women-consent/">generate nonconsensual deepfake porn</a>, 
-    <a href="https://www.washingtonpost.com/comics/2023/02/14/ai-in-illustration/">mimic artists' work</a>, 
-    <a href="https://www.theverge.com/2023/2/6/23587393/ai-art-copyright-lawsuit-getty-images-stable-diffusion">reproduce copyrighted/trademarked content</a>, and
-    <a href="https://www.bloomberg.com/graphics/2023-generative-ai-bias/">amplify stereotypes about race and gender</a>.
-   Such issues pose serious challenges for institutions releasing models. </p>
-  <p>   
-  There are methods that address these concerns separately, but they do not scale well to editing multiple concepts together. 
-    We propose a closed-form solution that can address these challenges in a unified way at scale, editing multiple concepts concurrently with minimal interference.
-  </p>
-  
-<h2> How to edit concepts simultaneously in diffusion models? </h2>
+  <h2>Why erase a concept from language model? </h2>
+<p>Concept erasure in language models addresses several critical issues. It helps mitigate <a href="https://www.nytimes.com/2023/12/27/business/media/new-york-times-open-ai-microsoft-lawsuit.html">copyright infringement risks</a> by removing potentially reproduced content. It enhances privacy protection by eliminating <a href="https://arxiv.org/abs/2311.17035">sensitive personal information</a> retained from training data. Safety is improved by erasing knowledge of <a href="https://www.wmdp.ai">dangerous concepts</a>. Selective removal of certain concepts aids in reducing <a href="https://dl.acm.org/doi/10.1145/3597307">model biases</a>. Lastly, concept erasure offers a more efficient alternative to full model retraining when updating or correcting specific information, saving significant time and computational resources.</p>
+
+<h2>How to erase concepts from language models?</h2>
   <figure class="center_image" style="margin-top: 30px">
     <center><img src="images/paper/method.png" style="width:100%; max-width:600px"></center>
     <figcaption> We update the weights of cross attention linear layers in closed-form by conditioning its outputs for the concepts to edit and preserve. Our method, UCE, does not require any training data collection or any gradient descent. UCE can debias, erase, and moderate concepts together in a single edit and scales to editing multiple concepts while minimizing interference with unedited concepts.
     </figcaption>
   </figure>
-  <p>We edit the cross attention weights by conditioning new target output for the concept embeddings to edit and preserve the previoud outputs for concepts to preserve. We minimize the loss shown in the figure above through this closed-form update:
-  </p>
-  <center><img src="images/paper/uce_closed.png" style="width:500px;padding-bottom:10px;"></center>
-  <p> Our method generalizes previous state-of-the-art model editing methods like <a href="https://arxiv.org/pdf/2303.08084.pdf">TIME</a> and 
-    <a href="https://openreview.net/pdf?id=MkbcAHIYgyS">MEMIT</a>. Our method can also be generalised to editing any linear projection.</p>
+  <p>Our Erasure of Language Memory (ELM) method is designed to address all four criteria of effective concept erasure. ELM employs a multi-objective approach that balances erasure, retention of general knowledge, and conditional fluency. The method works by fine-tuning low-rank adapters on Large Language Models (LLMs) using three key loss terms:</p>
+    
+    <ol>
+        <li><strong>Erasing Objective (L<sub>erase</sub>):</strong> This term encourages the model to reduce the likelihood of generating content related to the erased concept. It's defined as:
+            <p>L<sub>erase</sub> = E<sub>X∈D<sub>erase</sub></sub> CE(P<sub>θ*</sub>(X), P<sub>erased</sub><sub>θ</sub>)</p>
+            <p>Where P<sub>erased</sub><sub>θ</sub> is a modified probability distribution that reduces the likelihood of the erased concept. This objective ensures that when processing input from the erase dataset, the model's predicted probabilities diverge from the original distribution, effectively reducing the likelihood of tokens associated with the concept being erased.</p>
+        </li>
+
+        <li><strong>Retention Objective (L<sub>retain</sub>):</strong> This term helps preserve the model's performance on unrelated tasks. It's formulated as:
+            <p>L<sub>retain</sub> = E<sub>X∈D<sub>retain</sub></sub> CE(P<sub>θ*</sub>(X), P<sub>θ</sub>(X))</p>
+            <p>This objective encourages the model to maintain its original prediction probabilities when processing input tokens from the retain dataset, ensuring that unrelated knowledge remains intact.</p>
+        </li>
+
+        <li><strong>Conditional Fluency Objective (L<sub>fluency</sub>):</strong> This term ensures the model maintains text coherence when prompted with content related to erased concepts. It's defined as:
+            <p>L<sub>fluency</sub> = E<sub>X<sub>p</sub>∈D<sub>erase</sub></sub> [Σ<sub>t=2</sub><sup>T</sup> CE(P<sub>θ*</sub>(x<sub>t</sub>|X<sub>p</sub>, x<sub>1:t-1</sub>), P<sub>erased</sub><sub>θ</sub>(x<sub>t</sub>|X<sub>p</sub>, x<sub>1:t-1</sub>))]</p>
+            <p>This objective operates in two stages: First, it generates a sequence of synthesized training tokens by applying the erasing principle to the original model. Then, it trains the erased model to produce fluent and contextually different content in response to prompts about the erased concept.</p>
+        </li>
+    </ol>
+
+    <p>The overall loss for ELM is a weighted combination of these three components:</p>
+    <p>L<sub>total</sub> = λ<sub>1</sub>L<sub>erase</sub> + λ<sub>2</sub>L<sub>retain</sub> + λ<sub>3</sub>L<sub>fluency</sub></p>
+    <p>Where λ<sub>1</sub>, λ<sub>2</sub>, and λ<sub>3</sub> are hyperparameters controlling the relative importance of each objective.</p>
+
+    <p>By optimizing this combined loss, ELM achieves effective concept erasure while maintaining model fluency and general capabilities. Key features of ELM include:</p>
+    <ul>
+        <li>Near-random performance on erased concept evaluations</li>
+        <li>Maintained generation fluency for erased concepts</li>
+        <li>Preserved accuracy on unrelated tasks</li>
+        <li>Robustness against adversarial attacks</li>
+    </ul>
+
 <h2> Erasing an artistic style</h2>
   <p>Models like Stable Diffusion can mimic <a href="https://proximacentaurib.notion.site/About-Image-Synthesis-Style-Studies-4dcbd554f4b0403d802dc5b26fb3b8e9">the styles of more than 1500 artists</a>. Not all artists are excited about their art being mimicked by genrative models and wish to be opted-out of these models' vocubulary.
   Recent works have been working on <a href="https://spawning.ai">filtering the training data</a> to accomodate the opt-out requests from individuals. Eventhough such filtering would exclude the artists from future models that are trained on the filtered dataset, model editing may still be needed for certain artists that aren't fully addressed. We propose using UCE that is scalable, fast, and displays minimal interference with other artists. 
