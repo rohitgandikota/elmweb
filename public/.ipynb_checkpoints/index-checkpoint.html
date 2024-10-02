@@ -3,13 +3,13 @@
 <head>
 <title>Erasing Conceptual Knowledge from Language Models</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="Addressing bias, copyright, and offensive content in diffusion models by directly calculating parameter changes." />
-<meta property="og:title" content="Unified Concept Editing in Diffusion Models" />
-<meta property="og:description" content="Addressing bias, copyright, and offensive content in diffusion models by directly calculating parameter changes." />
+<meta name="description" content="Erasing concepts from language models by addressing innocence, seamlessness and specificity through low-rank model editing" />
+<meta property="og:title" content="Erasing Conceptual Knowledge from Language Models" />
+<meta property="og:description" content="Erasing concepts from language models by addressing innocence, seamlessness and specificity through low-rank model editing" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" /> 
-<meta name="twitter:title" content="Unified Concept Editing in Diffusion Models" />
-<meta name="twitter:description" content="Addressing bias, copyright, and offensive content in diffusion models by directly calculating parameter changes." />
+<meta name="twitter:title" content="Erasing Conceptual Knowledge from Language Models" />
+<meta name="twitter:description" content="Erasing concepts from language models by addressing innocence, seamlessness and specificity through low-rank model editing" />
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
@@ -122,94 +122,48 @@ capabilities showing the method’s specificity.</figcaption>
     
 <ol>
     <li><strong>Erasing Objective (L<sub>erase</sub>):</strong> This term encourages the model to reduce the likelihood of generating content related to the erased concept. It's defined as:
-        <img src="images/paper/erase.png" alt="Equation for Erasing Objective" />
-        <p>Where P<sub>erased</sub><sub>θ</sub> is a modified probability distribution that reduces the likelihood of the erased concept. This objective ensures that when processing input from the erase dataset, the model's predicted probabilities diverge from the original distribution, effectively reducing the likelihood of tokens associated with the concept being erased.</p>
+        <img src="images/paper/erase.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" />
+        <p>Where P<sup>erased</sup><sub>&theta;</sub> is a modified probability distribution that reduces the likelihood of the erased concept. </p>
+        <img src="images/paper/erase_pre.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" />
+        <p>
+            This objective ensures that when processing input from the erase dataset, the model's predicted probabilities diverge from the original distribution, effectively reducing the likelihood of tokens associated with the concept being erased. We increase the likelihood of concept c<sub>+</sub> (e.g., ”novice in bioweapons” or ”expert in biology”) occuring and reduce the likelihood of concept c<sub>-</sub> (e.g., ”expert in bioweapons”)</p>
     </li>
 
     <li><strong>Retention Objective (L<sub>retain</sub>):</strong> This term helps preserve the model's performance on unrelated tasks. It's formulated as:
-        <img src="images/paper/retain.png" alt="Equation for Retention Objective" />
+        <img src="images/paper/retain.png" alt="Equation for Retention Objective"  style="width:100%; max-width:400px" />
         <p>This objective encourages the model to maintain its original prediction probabilities when processing input tokens from the retain dataset, ensuring that unrelated knowledge remains intact.</p>
     </li>
 
     <li><strong>Conditional Fluency Objective (L<sub>fluency</sub>):</strong> This term ensures the model maintains text coherence when prompted with content related to erased concepts. It's defined as:
-        <img src="images/paper/fluency.png" alt="Equation for Conditional Fluency Objective" />
+        <img src="images/paper/fluency.png" alt="Equation for Conditional Fluency Objective"  style="width:100%; max-width:400px" />
         <p>This objective operates in two stages: First, it generates a sequence of synthesized training tokens by applying the erasing principle to the original model. Then, it trains the erased model to produce fluent and contextually different content in response to prompts about the erased concept.</p>
     </li>
 </ol>
 
 <p>By optimizing this combined loss, ELM achieves effective concept erasure while maintaining model fluency and general capabilities. </p>
 
-<h2> Erasing an artistic style</h2>
-  <p>Models like Stable Diffusion can mimic <a href="https://proximacentaurib.notion.site/About-Image-Synthesis-Style-Studies-4dcbd554f4b0403d802dc5b26fb3b8e9">the styles of more than 1500 artists</a>. Not all artists are excited about their art being mimicked by genrative models and wish to be opted-out of these models' vocubulary.
-  Recent works have been working on <a href="https://spawning.ai">filtering the training data</a> to accomodate the opt-out requests from individuals. Eventhough such filtering would exclude the artists from future models that are trained on the filtered dataset, model editing may still be needed for certain artists that aren't fully addressed. We propose using UCE that is scalable, fast, and displays minimal interference with other artists. 
-  To erase style, we use the name of the artist and steer them towards general prompts like "art" or "".</p>
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/style1.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Erasing 1 artist. On left, we show the original vs edited for the intended erasure. On the right, we show the interference with unerased artists. We find that our method efficiently erases while having the least inteference.
-    </figcaption>
-  </figure>
+<h2>Erasing Weapons of Mass Destruction Proxy (WMDP) Knowledge</h2>
+    <p>We evaluated ELM's performance on the Weapons of Mass Destruction Proxy (WMDP) dataset, focusing on biosecurity and cybersecurity concepts. We found:</p>
+    <img src="images/paper/wmdp.png" alt="Evaluations on WMDP"  style="width:100%; max-width:800px" />
+    <p>ELM erases the concept of bio and cyber threat such that the erased model almost acts like a random baseline while preserving overall capabilities across different models. However, we find that ELM has better perplexity when prompted for the erased concepts compared to the state of the art baselines. </p>
 
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/style2.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Erasing 5 artists at a time. On left, we show the original vs edited for the intended erasure. On the right, we show the interference with unerased artists. We find that our method efficiently erases while having the least inteference.
-    </figcaption>
-  </figure>
+<h2>How important are the loss terms for ELM?</h2>
+    <p>We ablate each loss term and also replace the loss terms with random objectives. For example, for erasing loss, we replace the groundtruth logits with a random tensor. Similarly, for consistency term, we replace the text with a random exerpt of text from wiki-text. We found:</p>
+    <img src="images/paper/ablation.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:800px" />
+    <p>Ablating erasing loss results in significantly higher WMDP scores, indicating incomplete erasure. Retain terms is very essential to maintain the model's capabilities post-erasure. Without the fluency term, the model shows compromised generation quality when prompted with erased concepts, highlighting its role in maintaining contextual relevance. </p>
 
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/style3.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Erasing 10 artists at a time. On left, we show the original vs edited for the intended erasure. On the right, we show the interference with unerased artists. We find that our method efficiently erases while having the least inteference.
-    </figcaption>
-  </figure>
 
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/style4.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Erasing 50 artists at a time. On left, we show the original vs edited for the intended erasure. On the right, we show the interference with unerased artists. We find that our method efficiently erases while having the least inteference.
-    </figcaption>
-  </figure>
-<h2> Debiasing a profession across gender and race</h2>
-  <p> Previous debiasing methods address only dual attributed biases, however, attributes like race are multi-faceted. We propose a multi-faceted debiasing formulation that can be scaled for multiple concepts. Our method has strong debiasing results, improving the race and gender representation in diffusion models.
-  <center><img src="images/paper/debias_equation.png" style="width:500px;padding-bottom:10px;"></center>
-    <p>This formulation allows UCE to address multi-attribute biases like race. We show some quantitative results of our method displaying improved race and gender diversity.</p>
-    <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/gender1.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Our method improves gender representation for professions in diffusion models.
-    </figcaption>
-  </figure>
-  
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/gender2.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Our method improves gender representation for professions in diffusion models.
-    </figcaption>
-  </figure>
-  
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/gender3.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Our method improves gender representation for professions in diffusion models.
-    </figcaption>
-  </figure>
+<h2>How does ELM effect the processing of tokens inside the model?</h2>
+    <p>To estimate the presence of erased knowledge within the internal representations of a model, we conduct the probing analysis, training a linear probe using the same setup as used by <a href="https://www.wmdp.ai">Li et al. (2024).</a></p>
+    <img src="images/paper/probes.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:800px" />
+    <p>Probe accuracies reveal that both ELM and RMU do not show traces of knowledge in the internal layers. However, when looked at activations norms across the layers, both ELM and RMU induce out-of-distribution activations in early layers for the forget set, but while RMU continues to exhibits persistent activation norm disruption across all layers. ELM activation norms return to baseline behavior in middle layers. This suggests altered initial processing of erased concepts during knowlege retrieval while preserving text-prediction behavior in later stages.</p>
+    
 
-   
- <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/race1.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Our method improves race representation for professions in diffusion models.
-    </figcaption>
-  </figure>
+<h2>How does ELM effect the processing of tokens inside the model?</h2>
+    <p>To demonstrate ELM's versatility in erasing broader conceptual knowledge, we applied it to remove information about the Harry Potter literary universe from language models. We compare ELM against <a href="https://www.wmdp.ai">RMU</a> and <a href="https://arxiv.org/abs/2310.02238">WhoIsHarryPotter (WHP)</a> methods for Llama-2-7B Chat. </p>
+    <img src="images/paper/hp.png" alt="Experiments of ELM on Harry Potter"  style="width:100%; max-width:800px" />
+    <p>ELM achieves a balance between effective knowledge erasure (low HP MCQ score) and maintaining fluent generation (low reverse-perplexity). While WHP model maintains fluency but fails to effectively erase the target knowledge. RMU proved ineffective in erasing the Harry Potter within our initial hyperparameter range. However, a more extensive sweep may be necessary to conclusively determine its limitations in this context.</p>
 
-   
- <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/race2.png" style="width:100%; max-width:800px"></center>
-    <figcaption> Our method improves race representation for professions in diffusion models.
-    </figcaption>
-  </figure>
-
-<h2> Moderating an unsafe concept</h2>
-  <p>We test our method on moderating unsafe concepts like <i>"nudity"</i>. We compare our method with <a href="https://erasing.baulab.info">ESD-u and ESD-x</a>. We find that our method has similar performance as ESD-x when erasing a single concept, but our method shows minimal interference with other concepts in the model. 
-  We also see that moderating multiple unsafe concepts like <i>"harm, violence, child abuse, blood, nudity"</i>, our method shows a stronger moderation effect on the model as seen in the figure below.</p>
-  <figure class="center_image" style="margin-top: 30px">
-    <center><img src="images/paper/nudity_bar.png" style="width:100%; max-width:800px"></center>
-    <figcaption> We show the percentage reduction in unsafe nudity samples compared to Original SD as classified by <a href="https://github.com/notAI-tech/NudeNet">Nudenet</a>. We find that our method has a superior performance when moderating multiple unsafe concepts.
-    </figcaption>
-  </figure>
   
 <h2>How to cite</h2>
 
@@ -220,17 +174,17 @@ capabilities showing the method’s specificity.</figcaption>
 <h3 class="card-header">bibliography</h3>
 <div class="card-block">
 <p style="text-indent: -3em; margin-left: 3em;" class="card-text clickselect">
-Rohit Gandikota, Hadas Orgad, Yonatan Belinkov, Joanna Materzy&#324;ska, David Bau. "<em>Unified Concept Editing in Diffusion Models.</em>"
-IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) 2024.</nobr>
+Rohit Gandikota, Sheridan Feucht, Samuel Marks, David Bau. "<em>Erasing Conceptual Knowledge from Language Models</em>"
+arXiv preprint arXiv:2410.xxxxx (2024).</nobr>
 </p>
 </div>
 <h3 class="card-header">bibtex</h3>
 <div class="card-block">
 <pre class="card-text clickselect">
-@article{gandikota2024unified,
-  title={Unified Concept Editing in Diffusion Models},
-  author={Rohit Gandikota and Hadas Orgad and Yonatan Belinkov and Joanna Materzy\'nska and David Bau},
-  journal={IEEE/CVF Winter Conference on Applications of Computer Vision},
+@article{gandikota2024erasing,
+  title={Erasing Conceptual Knowledge from Language Models},
+  author={Rohit Gandikota and Sheridan Feucht and Samuel Marks and David Bau},
+  journal={arXiv preprint arXiv:2410.xxxxx},
   year={2024}
 }
 </pre>
