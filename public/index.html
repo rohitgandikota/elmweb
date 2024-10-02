@@ -121,21 +121,21 @@ capabilities showing the method’s specificity.</figcaption>
   <p>Our Erasure of Language Memory (ELM) method is designed to address all four criteria of effective concept erasure. ELM employs a multi-objective approach that balances erasure, retention of general knowledge, and conditional fluency. The method works by fine-tuning low-rank adapters on Large Language Models (LLMs) using three key loss terms:</p>
     
 <ol>
-    <li><strong>Erasing Objective (L<sub>erase</sub>):</strong> This term encourages the model to reduce the likelihood of generating content related to the erased concept. It's defined as:
-        <img src="images/paper/erase.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" />
+    <li><strong>Erasing Objective (L<sub>erase</sub>):</strong> This term encourages the model to reduce the likelihood of generating content related to the erased concept. It's defined as:<br>
+        <center><img src="images/paper/erase.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" /></<center>
         <p>Where P<sup>erased</sup><sub>&theta;</sub> is a modified probability distribution that reduces the likelihood of the erased concept. </p>
-        <img src="images/paper/erase_pre.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" />
+        <center><img src="images/paper/erase_pre.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" /></center>
         <p>
             This objective ensures that when processing input from the erase dataset, the model's predicted probabilities diverge from the original distribution, effectively reducing the likelihood of tokens associated with the concept being erased. We increase the likelihood of concept c<sub>+</sub> (e.g., ”novice in bioweapons” or ”expert in biology”) occuring and reduce the likelihood of concept c<sub>-</sub> (e.g., ”expert in bioweapons”)</p>
     </li>
 
-    <li><strong>Retention Objective (L<sub>retain</sub>):</strong> This term helps preserve the model's performance on unrelated tasks. It's formulated as:
-        <img src="images/paper/retain.png" alt="Equation for Retention Objective"  style="width:100%; max-width:400px" />
+    <li><strong>Retention Objective (L<sub>retain</sub>):</strong> This term helps preserve the model's performance on unrelated tasks. It's formulated as:<br>
+        <center><img src="images/paper/retain.png" alt="Equation for Retention Objective"  style="width:100%; max-width:400px" /></center>
         <p>This objective encourages the model to maintain its original prediction probabilities when processing input tokens from the retain dataset, ensuring that unrelated knowledge remains intact.</p>
     </li>
 
-    <li><strong>Conditional Fluency Objective (L<sub>fluency</sub>):</strong> This term ensures the model maintains text coherence when prompted with content related to erased concepts. It's defined as:
-        <img src="images/paper/fluency.png" alt="Equation for Conditional Fluency Objective"  style="width:100%; max-width:400px" />
+    <li><strong>Conditional Fluency Objective (L<sub>fluency</sub>):</strong> This term ensures the model maintains text coherence when prompted with content related to erased concepts. It's defined as:<br>
+        <center><img src="images/paper/fluency.png" alt="Equation for Conditional Fluency Objective"  style="width:100%; max-width:500px" /></center>
         <p>This objective operates in two stages: First, it generates a sequence of synthesized training tokens by applying the erasing principle to the original model. Then, it trains the erased model to produce fluent and contextually different content in response to prompts about the erased concept.</p>
     </li>
 </ol>
@@ -144,24 +144,24 @@ capabilities showing the method’s specificity.</figcaption>
 
 <h2>Erasing Weapons of Mass Destruction Proxy (WMDP) Knowledge</h2>
     <p>We evaluated ELM's performance on the Weapons of Mass Destruction Proxy (WMDP) dataset, focusing on biosecurity and cybersecurity concepts. We found:</p>
-    <img src="images/paper/wmdp.png" alt="Evaluations on WMDP"  style="width:100%; max-width:800px" />
+    <center><img src="images/paper/wmdp.png" alt="Evaluations on WMDP"  style="width:100%; max-width:800px" /></center>
     <p>ELM erases the concept of bio and cyber threat such that the erased model almost acts like a random baseline while preserving overall capabilities across different models. However, we find that ELM has better perplexity when prompted for the erased concepts compared to the state of the art baselines. </p>
 
 <h2>How important are the loss terms for ELM?</h2>
     <p>We ablate each loss term and also replace the loss terms with random objectives. For example, for erasing loss, we replace the groundtruth logits with a random tensor. Similarly, for consistency term, we replace the text with a random exerpt of text from wiki-text. We found:</p>
-    <img src="images/paper/ablation.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:800px" />
+    <center><img src="images/paper/ablation.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:800px" /></center>
     <p>Ablating erasing loss results in significantly higher WMDP scores, indicating incomplete erasure. Retain terms is very essential to maintain the model's capabilities post-erasure. Without the fluency term, the model shows compromised generation quality when prompted with erased concepts, highlighting its role in maintaining contextual relevance. </p>
 
 
 <h2>How does ELM effect the processing of tokens inside the model?</h2>
     <p>To estimate the presence of erased knowledge within the internal representations of a model, we conduct the probing analysis, training a linear probe using the same setup as used by <a href="https://www.wmdp.ai">Li et al. (2024).</a></p>
-    <img src="images/paper/probes.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:800px" />
+    <center><img src="images/paper/probes.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:1000px" /></center>
     <p>Probe accuracies reveal that both ELM and RMU do not show traces of knowledge in the internal layers. However, when looked at activations norms across the layers, both ELM and RMU induce out-of-distribution activations in early layers for the forget set, but while RMU continues to exhibits persistent activation norm disruption across all layers. ELM activation norms return to baseline behavior in middle layers. This suggests altered initial processing of erased concepts during knowlege retrieval while preserving text-prediction behavior in later stages.</p>
     
 
 <h2>How does ELM effect the processing of tokens inside the model?</h2>
     <p>To demonstrate ELM's versatility in erasing broader conceptual knowledge, we applied it to remove information about the Harry Potter literary universe from language models. We compare ELM against <a href="https://www.wmdp.ai">RMU</a> and <a href="https://arxiv.org/abs/2310.02238">WhoIsHarryPotter (WHP)</a> methods for Llama-2-7B Chat. </p>
-    <img src="images/paper/hp.png" alt="Experiments of ELM on Harry Potter"  style="width:100%; max-width:800px" />
+    <center><img src="images/paper/hp.png" alt="Experiments of ELM on Harry Potter"  style="width:100%; max-width:800px" /></center>
     <p>ELM achieves a balance between effective knowledge erasure (low HP MCQ score) and maintaining fluent generation (low reverse-perplexity). While WHP model maintains fluency but fails to effectively erase the target knowledge. RMU proved ineffective in erasing the Harry Potter within our initial hyperparameter range. However, a more extensive sweep may be necessary to conclusively determine its limitations in this context.</p>
 
   
