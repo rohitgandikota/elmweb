@@ -20,7 +20,8 @@ h2 {
 }
 
 .nd-pageheader a, .nd-pageheader a.likelink {
-  color: #EECCEE;
+  color: #000000;
+  font-weight: 400;
 }
 
 .nd-pagefooter {
