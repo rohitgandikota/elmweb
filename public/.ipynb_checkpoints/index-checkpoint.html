@@ -92,13 +92,10 @@ from
 <div class="card-block">
 <h3>What does it mean to erase conceptual knowledge from a language model?</h3>
 <p>
-    <p>
-        Erasing conceptual knowledge from a language model involves the intricate process of removing specific information or capabilities while maintaining the model's overall functionality. This task presents unique challenges that require a comprehensive approach. To achieve effective concept erasure, we propose three key criteria that must be met simultaneously. <b>Innocence: </b>the model should exhibit innocence, completely forgetting the targeted knowledge and showing no signs of retaining the information regardless of how it's prompted or probed. <b>Seamlessness: </b> the model should generate fluent, coherent text that gracefully handles the absence of the target knowledge rather than generating nonsensical output when prompted about erased concepts. <b>Specificity: </b> the erasure must be specific, ensuring that the process does not impact the model's performance on unrelated tasks or concepts, thus maintaining its general capabilities.
-    </p>
+    <p>Concept erasure in language models demands three essential criteria. <span class="key-point">Innocence</span> ensures complete removal of target knowledge, making it resistant to any form of probing. <span class="key-point">Seamlessness</span> maintains coherent output when handling erased concepts. <span class="key-point">Specificity</span> achieves precise removal without affecting unrelated capabilities.</p>
     
 <p>
-In this paper, we present a method that considers all these criteria to effectively erase concepts from language models.
-  Our method, <b>Erasure of Language Memory (ELM)</b>, works by employing targeted low-rank updates to alter output distributions for erased concepts. It uses a multi-objective approach that balances erasure, retention of general knowledge, and conditional fluency. This method allows us to remove specific conceptual knowledge while preserving the model's overall capabilities and ensuring seamless text generation even when prompted about erased topics.
+To address this triad of objectives, we propose <b>Erasure of Language Memory (ELM)</b>, a method enabling precise knowledge erasure while maintaining contextual text generation fluency for seamless editing.
 </p>
 </div><!--card-block-->
 </div><!--card-->
