@@ -151,7 +151,7 @@ capabilities showing the method’s specificity.</figcaption>
 
 <h2>How important are the loss terms for ELM?</h2>
     <p>We ablate each loss term and also replace the loss terms with random objectives. For example, for erasing loss, we replace the groundtruth logits with a random tensor. Similarly, for consistency term, we replace the text with a random exerpt of text from wiki-text. We found:</p>
-    <center><img src="images/paper/ablation.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:800px" /></center>
+    <center><img src="images/paper/ablation.png" alt="Ablations of ELM on WMDP"  style="width:100%; max-width:700px" /></center>
     <p>Ablating erasing loss results in significantly higher WMDP scores, indicating incomplete erasure. Retain terms is very essential to maintain the model's capabilities post-erasure. Without the fluency term, the model shows compromised generation quality when prompted with erased concepts, highlighting its role in maintaining contextual relevance. </p>
 
 
@@ -163,7 +163,7 @@ capabilities showing the method’s specificity.</figcaption>
 
 <h2>How does ELM effect the processing of tokens inside the model?</h2>
     <p>To demonstrate ELM's versatility in erasing broader conceptual knowledge, we applied it to remove information about the Harry Potter literary universe from language models. We compare ELM against <a href="https://www.wmdp.ai">RMU</a> and <a href="https://arxiv.org/abs/2310.02238">WhoIsHarryPotter (WHP)</a> methods for Llama-2-7B Chat. </p>
-    <center><img src="images/paper/hp.png" alt="Experiments of ELM on Harry Potter"  style="width:100%; max-width:800px" /></center>
+    <center><img src="images/paper/hp.png" alt="Experiments of ELM on Harry Potter"  style="width:100%; max-width:750px" /></center>
     <p>ELM achieves a balance between effective knowledge erasure (low HP MCQ score) and maintaining fluent generation (low reverse-perplexity). While WHP model maintains fluency but fails to effectively erase the target knowledge. RMU proved ineffective in erasing the Harry Potter within our initial hyperparameter range. However, a more extensive sweep may be necessary to conclusively determine its limitations in this context.</p>
 
   
