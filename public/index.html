@@ -92,10 +92,10 @@ from
 <div class="card-block">
 <h3>Why is it critical to think about concept erasure in LLMs?</h3>
 <p>
-    <p>When erasing a piece of knowledge from language model, it is easy to destroy the model or not erase anything at all. To properly erase something from a language model, it is important to pay attention to three effects: Innocence, Seamlessness, and Specificity. </p>
-    <p>The erased model should not exhibit any traces of knowledge and must show <i>innocence</i> of knowledge. The edit must be <i>seamless</i> in a way that the model doesn't generate gibberish upon encountering the concept, but rather acts like it has never heard of the concept. Finally, the edit has to be precise that it doesn't effect the model's general capabilities.</p>
+    <p>When erasing a piece of knowledge from language model, it is easy to destroy the model or not erase anything at all. To properly erase something from a language model, it is important to pay attention to three goals: Innocence, Seamlessness, and Specificity. </p>
+    <p><b>Innocence:</b> the erased model should not exhibit any traces of knowledge. <b>Seamlessness:</b> the model should not generate gibberish text upon encountering the concept, but rather act like it has never heard of it. <b>Specificity:</b> the erasure should not effect the general capabilities of the original model.</p>
 <p>
-Our method <b>Erasure of Language Memory (ELM)</b> finds a low rank edit to the model weights, that makes it forget a concept precisely and seamlessly.
+We introduce a new method called <b>Erasure of Language Memory (ELM)</b>. ELM stands apart from previous approaches because it addresses all the three at the same time.
 </p>
 </div><!--card-block-->
 </div><!--card-->
