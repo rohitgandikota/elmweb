@@ -122,14 +122,13 @@ capabilities showing the method’s specificity.</figcaption>
     
 <ol>
     <li><strong>Erasing Objective (L<sub>erase</sub>):</strong> This term encourages the model to reduce the likelihood of generating content related to the erased concept. It's defined as:<br>
+        <center><img src="images/paper/erase_pre.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" /></center>
         
         <center><img src="images/paper/erase.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" /></<center>
             
         <p>Where P<sup>erased</sup><sub>&theta;</sub> is a modified probability distribution that reduces the likelihood of the erased concept. </p>
-        
-        <center><img src="images/paper/erase_pre.png" alt="Equation for Erasing Objective"  style="width:100%; max-width:400px" /></center>
-        
-            <p>This objective ensures that when processing input from the erase dataset, the model's predicted probabilities diverge from the original distribution, effectively reducing the likelihood of tokens associated with the concept being erased. We increase the likelihood of concept c<sub>+</sub> (e.g., "novice in bioweapons" or "expert in biology") occuring and reduce the likelihood of concept c<sub>-</sub> (e.g., "expert in bioweapons")</p>
+
+        <p>This objective ensures that when processing input from the erase dataset, the model's predicted probabilities diverge from the original distribution, effectively reducing the likelihood of tokens associated with the concept being erased. We increase the likelihood of concept c<sub>+</sub> (e.g., "novice in bioweapons" or "expert in biology") occuring and reduce the likelihood of concept c<sub>-</sub> (e.g., "expert in bioweapons")</p>
     </li>
 
     <li><strong>Retention Objective (L<sub>retain</sub>):</strong> This term helps preserve the model's performance on unrelated tasks. It's formulated as:<br>
